@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, BookOpen, Search } from 'react-feather';
+import { Activity, BookOpen, Search, ArrowLeft } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import styled from 'styled-components';
 
@@ -51,12 +51,7 @@ const ParentNav = (props) => {
 
 const Navbar = (props) => {
   const { match, location, history } = props;
-  return (
-    <>
-      {/* {location.pathname.includes('/search') || location.pathname.includes('/meal') ? <ChildNav  {...props} /> : <ParentNav {...props} />} */}
-      <ParentNav {...props} />
-    </>
-  )
+  return navbarLinks.find(o => o.path === location.pathname) !== undefined ? <ParentNav {...props} /> : null;
 }
 
 const StyledTab = styled.div`

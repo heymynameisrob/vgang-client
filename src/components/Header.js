@@ -1,27 +1,46 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { AuthContext } from '../context/AuthProvider';
 import styled, { ThemeContext } from 'styled-components';
+import { ArrowLeft } from 'react-feather';
 
-export const ViewHeader = (props) => {
-  const { children } = props;
+export const Header = (props) => {
+  const { children, history, childView } = props;
+  const theme = useContext(ThemeContext);
   return (
     <StyledViewHeader role="banner">
+      {childView && <a href="#" onClick={history.goBack}><ArrowLeft color={theme.colors.grey} /></a>}
       <h4>{children}</h4>
-      <ProfileAvatar />
+      {!childView && <ProfileAvatar />}
     </StyledViewHeader>
   );
+};
+
+export const ViewHeader = withRouter(Header);
+
+// Get initials from first name
+const getInitials = (string) => {
+  var names = string.split(' '),
+    initials = names[0].substring(0, 1).toUpperCase();
+
+  if (names.length > 1) {
+    initials += names[names.length - 1].substring(0, 1).toUpperCase();
+  }
+  return initials;
 };
 
 const ProfileAvatar = () => {
   const user = useContext(AuthContext);
   const theme = useContext(ThemeContext);
   const { displayName, photoURL } = user.userInfo;
+  let checkForAvatar = photoURL.length > 0 && true;
 
   return (
     <StyledAvatarWrap>
       <Link to="/profile">
-        <img src={photoURL} alt={displayName} />
+        <StyledAvatar style={{ backgroundImage: `url(${checkForAvatar && photoURL})` }}>
+          {!checkForAvatar && getInitials(displayName)}
+        </StyledAvatar>
       </Link>
     </StyledAvatarWrap>
   )
@@ -31,35 +50,49 @@ const StyledViewHeader = styled.header`
   position:absolute;
   top:0;
   left:0;
+  display:grid;
+  grid-template-columns:minmax(40px, auto) 1fr minmax(40px, auto);
   width:100%;  
-  z-index:2;
-  padding:1.5rem 1rem;
+  z-index:98;  
   margin:0;
-  text-align:center;
-  display:flex;
-  justify-content:flex-start;
-  align-items:stretch;
-  flex-flow:row nowrap;
+  text-align:center;  
+  padding:0 1.5rem;
+  height:64px;
   box-shadow:0 0 16px rgba(0,0,0,0.08);
 
   h4 {
-    margin:0 auto;   
+    grid-column:2;
+    margin:0;
+    text-align:center;  
+    align-self:center;    
+  }
+  a {    
+    margin:0;    
+    align-self:center; 
+  }
+  a svg {
+    display:block;
   }
 `
 
 const StyledAvatarWrap = styled.div`
-  position:absolute;
-  top:.75rem;
-  right:1rem;    
+  display:block;  
+  align-self:center;
 
   a {
-    display:block;
+    text-decoration:none;
   }
-  
-  img {
-    display:block;
-    width:2.5rem;
-    border-radius:50%;  
-    box-shadow:0 2px 4px rgba(0,0,0,0.08);
-  }
+`
+const StyledAvatar = styled.div`
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background-size:cover;
+  width:2.5rem;
+  height:2.5rem;
+  border-radius:50%;  
+  background-color:${props => props.theme.colors.pear};
+  color:#fff;  
+  font-weight:600;
+  box-shadow:0 2px 4px rgba(0,0,0,0.08);
 `

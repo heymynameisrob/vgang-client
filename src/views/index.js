@@ -3,10 +3,10 @@ import { ViewHeader } from '../components/Header';
 import styled from 'styled-components';
 
 const ViewContainer = (props) => {
-  const { children, title } = props;
+  const { children, title, childView } = props;
   return (
     <StyledViewContainer>
-      <ViewHeader>
+      <ViewHeader childView={childView}>
         {title}
       </ViewHeader>
       {children}
@@ -17,7 +17,7 @@ const ViewContainer = (props) => {
 const StyledViewContainer = styled.div`
   display:block;
   margin-top:67px;
-  padding:2rem 0;
+  padding:2rem 1.5rem;
 `
 
 export default ViewContainer;
