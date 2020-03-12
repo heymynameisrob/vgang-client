@@ -54,9 +54,10 @@ function DataProvider(props) {
     console.log(data);
   }
 
-  const getSuggested = async () => {
+  const getSuggested = async (limit) => {
+    let collectionLimit = limit || 6;
     try {
-      const snapshot = await db.collection('recipes').limit(3).get()
+      const snapshot = await db.collection('recipes').limit(collectionLimit).get()
       setSuggested(snapshot.docs.map(doc => doc.data()));
     } catch (error) {
       return error

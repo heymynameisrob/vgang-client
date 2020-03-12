@@ -62,9 +62,13 @@ const StyledViewHeader = styled.header`
 
   h4 {
     grid-column:2;
-    margin:0;
+    margin:0 auto;
     text-align:center;  
-    align-self:center;    
+    align-self:center;   
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    max-width:80%;    
   }
   a {    
     margin:0;    

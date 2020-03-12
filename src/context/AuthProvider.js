@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-// import LoadingSpinner from '../components/lib/LoadingSpinner';
+import { LoadingSpinner } from '../components/Helpers';
 
 export const AuthContext = React.createContext();
 const provider = new firebase.auth.GoogleAuthProvider();
@@ -30,8 +30,7 @@ function AuthProvider(props) {
   }, []);
 
   if (fetchingUserData) {
-    // return <LoadingSpinner fixed />
-    return <div>Loading...</div>
+    return <LoadingSpinner fixed={'fixed'} />
   }
 
 
