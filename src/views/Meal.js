@@ -1,9 +1,50 @@
 import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useData } from '../context/DataProvider';
+import { useData, DataContext } from '../context/DataProvider';
 import ViewContainer from './index';
-import { LoadingListSkeleton } from '../components/Helpers';
-import styled from 'styled-components';
+import { LoadingListSkeleton, convertToTitleCase } from '../components/Helpers';
+import styled, {ThemeContext} from 'styled-components';
+import { Tabs } from '../components/Tabs';
+import { Heart, Share, Bookmark } from 'react-feather';
+
+const IngredientList = ({data}) => {
+  return(
+    <StyledIngredientList>
+      {data.map(item => {
+        return(
+          <li key={item.name}>
+            <span>{Math.ceil(item.measures.metric.amount)} {item.measures.metric.unitShort}</span>
+            <p>{convertToTitleCase(item.name)}</p>
+          </li>
+        )
+      })}
+    </StyledIngredientList>
+  )
+}
+
+const RecipeInstructions = (props) => {
+  const {id} = props;
+  const { fullRecipeInstructions, getFullRecipeInstructions } = useData();
+
+  useEffect(() => {
+    getFullRecipeInstructions(id);
+  }, [])    
+
+
+  if (fullRecipeInstructions.length == 0) {
+    return <LoadingListSkeleton />
+  }  
+
+  return fullRecipeInstructions[0].steps.map(item => {
+    const {step,number} = item;
+    return(
+      <StyledInstructions key={number}>
+        <span>{number}</span>
+        <p>{step}</p>
+      </StyledInstructions>
+    )
+  })
+}
 
 const MealHeader = (props) => {
   const { title, image, readyInMinutes, servings } = props.data;
@@ -17,25 +58,29 @@ const MealHeader = (props) => {
     </StyledMealHeader>
   )
 }
-const MealActions = () => {
-  return <div>Actions</div>
-}
-const Meal = () => {
+const Meal = () => {  
   const { fullRecipeInfo, getFullRecipeInfo } = useData();
   let { id } = useParams();
 
   useEffect(() => {
-    getFullRecipeInfo(id);
+    getFullRecipeInfo(id);    
   }, [])
 
   if (fullRecipeInfo.length == 0) {
     return <LoadingListSkeleton />
-  }
+  }    
 
   return (
     <ViewContainer title={fullRecipeInfo.title} childView={true}>
-      <MealHeader data={fullRecipeInfo} />
-      <MealActions />
+      <MealHeader data={fullRecipeInfo} />      
+      <Tabs>
+        <div label="Ingredients">          
+          <IngredientList data={fullRecipeInfo.extendedIngredients} />
+        </div>
+        <div label="Method">
+          <RecipeInstructions id={id}/>
+        </div>
+      </Tabs>
     </ViewContainer>
   );
 };
@@ -71,5 +116,57 @@ const StyledMealHeaderInner = styled.div`
     color:#fff;
   }
 `;
+
+const StyledIngredientList = styled.ul`
+  display:block;
+
+  li {
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;    
+    list-style-type:none;
+    padding:.5rem 0;
+
+    span {
+      flex:0 0 20%;
+      font-size:0.85rem;
+      color:${props => props.theme.colors.greyDark};      
+    }
+    p {
+      flex:1;
+      margin:0;
+    }
+  }
+`
+const StyledInstructions = styled.div`
+  display:block;
+  margin-bottom:1.5rem;
+
+  span {
+    display:block;
+    font-size:3rem;
+    opacity:0.25;    
+  }  
+`
+
+const StyledActionWrap = styled.div`
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);  
+`
+
+const StyledAction = styled.a`
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-flow:column nowrap;
+  text-decoration:none;
+  cursor:pointer;
+  padding:1.5rem;
+  text-align:center;
+
+  p {
+    margin-top:.5rem;
+  }
+`
 
 export default Meal;

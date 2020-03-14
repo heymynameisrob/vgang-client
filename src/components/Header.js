@@ -9,7 +9,7 @@ export const Header = (props) => {
   const theme = useContext(ThemeContext);
   return (
     <StyledViewHeader role="banner">
-      {childView && <a href="#" onClick={history.goBack}><ArrowLeft color={theme.colors.grey} /></a>}
+      {childView && <a style={{cursor:'pointer' }} onClick={history.goBack}><ArrowLeft color={theme.colors.greyDark} /></a>}
       <h4>{children}</h4>
       {!childView && <ProfileAvatar />}
     </StyledViewHeader>
