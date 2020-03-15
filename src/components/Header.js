@@ -47,9 +47,6 @@ const ProfileAvatar = () => {
 }
 
 const StyledViewHeader = styled.header`
-  position:absolute;
-  top:0;
-  left:0;
   display:grid;
   grid-template-columns:minmax(40px, auto) 1fr minmax(40px, auto);
   width:100%;  

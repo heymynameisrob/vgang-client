@@ -1,5 +1,5 @@
 import React from 'react';
-import ViewContainer from './index.js';
+import {ViewContainer, ViewLayout } from './index';
 
 const Learn = () => {
   return (

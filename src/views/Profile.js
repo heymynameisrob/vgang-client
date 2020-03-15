@@ -1,13 +1,12 @@
 import React, { Children, useContext } from 'react';
 import { AuthContext } from '../context/AuthProvider';
 import styled from 'styled-components';
-import ViewContainer from './index';
-
+import {ViewContainer, ViewLayout} from './index.js';
 
 const ProfileInfo = () => {
   const user = useContext(AuthContext);
   const { displayName, photoURL, email } = user.userInfo;
-  return (
+  return (  
     <StyledProfileInfo>
       <StyledProfileInfoAvatar src={photoURL} />
       <h3>{displayName}</h3>
@@ -16,21 +15,29 @@ const ProfileInfo = () => {
   )
 }
 
+const ProfileMenu = (props) => {
+  return(
+    <StyledList>
+      <a href="#">Privacy Policy</a>
+      <a href="#">App Info</a>
+      <AuthContext.Consumer>
+        {({ logout }) => (
+          <a href="#" onClick={logout} >
+            Logout
+          </a>
+        )}
+      </AuthContext.Consumer>
+    </StyledList>
+  )
+}
+
 const Profile = () => {
   return (
     <ViewContainer title={'Profile'} childView={true}>
-      <ProfileInfo />
-      <StyledList>
-        <a href="#">Privacy Policy</a>
-        <a href="#">App Info</a>
-        <AuthContext.Consumer>
-          {({ logout }) => (
-            <a href="#" onClick={logout} >
-              Logout
-            </a>
-          )}
-        </AuthContext.Consumer>
-      </StyledList>
+      <ViewLayout>
+        <ProfileInfo />
+        <ProfileMenu />
+      </ViewLayout>  
     </ViewContainer>
   );
 };

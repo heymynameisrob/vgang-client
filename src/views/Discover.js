@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, Suspense, useState } from 'react';
-import ViewContainer from './index.js';
+import {ViewContainer, ViewLayout} from './index.js';
 import { useData } from '../context/DataProvider';
 import { AuthContext } from '../context/AuthProvider';
 import { ListItem } from '../components/List';
@@ -39,11 +39,11 @@ const Suggestions = (props) => {
   }, [suggestionLimit]);
 
   return (
-    <div>
+    <ViewLayout>
       <p><strong>Suggested for today</strong></p>
       {suggested.length > 1 ? <SuggestionList data={suggested} /> : <LoadingListSkeleton />}
       <SecondaryButton size={'large'} label={'Load More'} onClick={() => setSuggestionLimit(suggestionLimit + 4)} />
-    </div>
+    </ViewLayout>
   );
 }
 

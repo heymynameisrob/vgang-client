@@ -9,10 +9,37 @@ function DataProvider(props) {
   const [suggested, setSuggested] = useState([]);
   const [fullRecipeInfo, setFullRecipeInfo] = useState([]);
   const [fullRecipeInstructions, setFullRecipeInstructions] = useState([]);
+  const [goals, setGoals] = useState([]);
 
   const db = firebase.firestore();
   const Auth = useContext(AuthContext);
   const { uid } = Auth.userInfo;
+
+  const getGoals = async() => {
+    try {
+      const snapshot = await db.collection('users').doc(uid).collection('goals').get();      
+      setGoals(snapshot.docs.map(doc => {
+        const data = doc.data();
+        const id = doc.id;
+        return { id, data }
+      }));
+    } catch (error) {
+      return error
+    }
+  };
+
+  const addGoal = (data) => {  
+    db.collection('users').doc(uid).collection('goals').add(data)    
+    .then(() => {getGoals()})    
+    .catch(err => console.error(err.message));
+  };
+  
+  const removeGoal = (docId) => {    
+    db.collection('users').doc(uid).collection('goals').doc(docId).delete()
+    .then(() => {getGoals()})
+    .catch(err => console.log(err.message));
+    
+  };
 
   const getFullRecipeInfo = async (id) => {    
     try {
@@ -45,8 +72,9 @@ function DataProvider(props) {
   
   return (
     <DataContext.Provider value={{
-      fullRecipeInfo, suggested, fullRecipeInstructions,
-      getFullRecipeInfo, getSuggested, getFullRecipeInstructions      
+      fullRecipeInfo, suggested, fullRecipeInstructions, goals,
+      getFullRecipeInfo, getSuggested, getFullRecipeInstructions,
+      getGoals, addGoal, removeGoal      
     }} {...props} />
   )
 }

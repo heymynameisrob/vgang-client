@@ -4,6 +4,12 @@
 	box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+	height:100%;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -83,16 +89,20 @@ h4 {
 	font-size:1rem;
 }
 p.body-lg {
-	font-size:1rem;
+	font-size:1.125rem;
 }
 p {
-	font-size:0.875rem;
+	font-size:1rem;
 	color:rgba(0,0,0,0.7);
 	line-height: 1.6;
 	margin:0;
 }
 small {
 	font-size:0.75rem;
+}
+
+a {
+	text-decoration: none;
 }
 
 @media(min-width:56rem) {

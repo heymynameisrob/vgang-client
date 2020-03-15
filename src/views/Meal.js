@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useData, DataContext } from '../context/DataProvider';
-import ViewContainer from './index';
+import {ViewContainer, ViewLayout } from './index';
 import { LoadingListSkeleton, convertToTitleCase } from '../components/Helpers';
 import styled, {ThemeContext} from 'styled-components';
 import { Tabs } from '../components/Tabs';
@@ -9,16 +9,18 @@ import { Heart, Share, Bookmark } from 'react-feather';
 
 const IngredientList = ({data}) => {
   return(
-    <StyledIngredientList>
-      {data.map(item => {
-        return(
-          <li key={item.name}>
-            <span>{Math.ceil(item.measures.metric.amount)} {item.measures.metric.unitShort}</span>
-            <p>{convertToTitleCase(item.name)}</p>
-          </li>
-        )
-      })}
-    </StyledIngredientList>
+    <ViewLayout>
+      <StyledIngredientList>
+        {data.map(item => {
+          return(
+            <li key={item.name}>
+              <span>{Math.ceil(item.measures.metric.amount)} {item.measures.metric.unitShort}</span>
+              <p>{convertToTitleCase(item.name)}</p>
+            </li>
+          )
+        })}
+      </StyledIngredientList>
+    </ViewLayout>
   )
 }
 
@@ -38,10 +40,12 @@ const RecipeInstructions = (props) => {
   return fullRecipeInstructions[0].steps.map(item => {
     const {step,number} = item;
     return(
-      <StyledInstructions key={number}>
-        <span>{number}</span>
-        <p>{step}</p>
-      </StyledInstructions>
+      <ViewLayout>
+        <StyledInstructions key={number}>
+          <span>{number}</span>
+          <p>{step}</p>
+        </StyledInstructions>
+      </ViewLayout>
     )
   })
 }
@@ -74,11 +78,13 @@ const Meal = () => {
     <ViewContainer title={fullRecipeInfo.title} childView={true}>
       <MealHeader data={fullRecipeInfo} />      
       <Tabs>
-        <div label="Ingredients">          
-          <IngredientList data={fullRecipeInfo.extendedIngredients} />
+        <div label="Ingredients">                              
+          <IngredientList data={fullRecipeInfo.extendedIngredients} />          
         </div>
         <div label="Method">
-          <RecipeInstructions id={id}/>
+          <React.Suspense fallback={<LoadingListSkeleton />}>
+            <RecipeInstructions id={id}/>
+          </React.Suspense>
         </div>
       </Tabs>
     </ViewContainer>
