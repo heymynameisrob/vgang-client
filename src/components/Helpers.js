@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Skeleton from 'react-loading-skeleton';
+const dayjs = require('dayjs');
 
 export const LoadingListSkeleton = () => {
   return <Skeleton count={5} />
@@ -15,6 +16,12 @@ export const LoadingSpinner = ({ fixed }) => {
   );
 };
 
+export const getDaysLeftPc = (start, end) => {
+  const startDate = dayjs(start);
+  const endDate = dayjs(end);  
+  return 100 - (endDate.diff(dayjs(), 'h') / endDate.diff(startDate, 'h') * 100);
+}
+
 export const convertToTitleCase = (string) => {
   var sentence = string.toLowerCase().split(" ");
   for(var i = 0; i< sentence.length; i++){
@@ -23,6 +30,32 @@ export const convertToTitleCase = (string) => {
   
   return sentence.join(" ");
 }
+
+export const readableColor = (hexcolor) => {
+	// If a leading # is provided, remove it
+	if (hexcolor.slice(0, 1) === '#') {
+		hexcolor = hexcolor.slice(1);
+	}
+
+	// If a three-character hexcode, make six-character
+	if (hexcolor.length === 3) {
+		hexcolor = hexcolor.split('').map(function (hex) {
+			return hex + hex;
+		}).join('');
+	}
+
+	// Convert to RGB value
+	var r = parseInt(hexcolor.substr(0,2),16);
+	var g = parseInt(hexcolor.substr(2,2),16);
+	var b = parseInt(hexcolor.substr(4,2),16);
+
+	// Get YIQ ratio
+	var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+
+	// Check contrast
+	return (yiq >= 128) ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)';
+}
+
 
 const StyledLoadingSpinnerWrap = styled.div`
   position:${props => props.fixed ? 'fixed' : 'static'};

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, BookOpen, Search, ArrowLeft } from 'react-feather';
+import { BookOpen, Search, Flag } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import styled from 'styled-components';
 
@@ -10,8 +10,8 @@ const navbarLinks = [
     path: '/',
   },
   {
-    id: 'track',
-    path: '/track',
+    id: 'challenge',
+    path: '/challenge',
   },
   {
     id: 'learn',
@@ -26,7 +26,7 @@ const ParentNav = (props) => {
     return el.path === pathname
   });
   const [tabActive, setTabActive] = useState(find.id);
-  const themedIcons = { discover: Search, track: Activity, learn: BookOpen }
+  const themedIcons = { discover: Search, challenge: Flag, learn: BookOpen }
 
   return (
     <nav role="navigation">

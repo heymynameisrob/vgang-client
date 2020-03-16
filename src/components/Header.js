@@ -3,13 +3,14 @@ import { Link, withRouter } from 'react-router-dom';
 import { AuthContext } from '../context/AuthProvider';
 import styled, { ThemeContext } from 'styled-components';
 import { ArrowLeft } from 'react-feather';
+import {readableColor} from '../components/Helpers';
 
 export const Header = (props) => {
-  const { children, history, childView } = props;
+  const { children, history, childView, baseColor } = props;
   const theme = useContext(ThemeContext);
   return (
-    <StyledViewHeader role="banner">
-      {childView && <a style={{cursor:'pointer' }} onClick={history.goBack}><ArrowLeft color={theme.colors.greyDark} /></a>}
+    <StyledViewHeader role="banner" base={baseColor || '#fff'} lead={baseColor ? readableColor(baseColor) : 'rgba(0,0,0,0.9)'}> 
+      {childView && <a style={{cursor:'pointer' }} onClick={history.goBack}><ArrowLeft color={baseColor ? readableColor(baseColor) : 'rgba(0,0,0,0.9)'} /></a>}
       <h4>{children}</h4>
       {!childView && <ProfileAvatar />}
     </StyledViewHeader>
@@ -55,7 +56,8 @@ const StyledViewHeader = styled.header`
   text-align:center;  
   padding:0 1.5rem;
   height:64px;
-  box-shadow:0 0 16px rgba(0,0,0,0.08);
+  background-color:${props => props.base};
+  box-shadow:0 0 16px rgba(0,0,0,0.08);  
 
   h4 {
     grid-column:2;
@@ -65,7 +67,8 @@ const StyledViewHeader = styled.header`
     overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
-    max-width:80%;    
+    max-width:80%;        
+    color: ${props => props.lead};
   }
   a {    
     margin:0;    

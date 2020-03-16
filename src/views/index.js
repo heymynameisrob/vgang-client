@@ -11,10 +11,10 @@ export const ViewLayoutCenter = (props) => {
 }
 
 export const ViewContainer = (props) => {
-  const { children, title, childView } = props;
+  const { children, title, ...rest } = props;
   return (
     <StyledContainer>
-      <ViewHeader childView={childView}>
+      <ViewHeader {...rest}>
         {title}
       </ViewHeader>   
       {children} 
@@ -29,11 +29,17 @@ const StyledContainer = styled.div`
 `
 
 const StyledLayout = styled.section`
-  display:block;
+  display:flex;
+  justify-content:flex-start;  
+  flex-flow:column nowrap;
   padding:${props => props.noPad ? '0' : '2rem 1.5rem 4rem 1.5rem;'};
   max-width:32rem;
   margin:0 auto;
   width:100%;
+
+  button {
+    margin-top:auto;
+  }
 
   @media(min-width:56rem) {
     padding:1.5rem 0 6rem;

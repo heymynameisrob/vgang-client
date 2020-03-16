@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 import { AuthContext } from './AuthProvider';
+const dayjs = require('dayjs');
 
 export const DataContext = React.createContext();
 
@@ -9,37 +10,50 @@ function DataProvider(props) {
   const [suggested, setSuggested] = useState([]);
   const [fullRecipeInfo, setFullRecipeInfo] = useState([]);
   const [fullRecipeInstructions, setFullRecipeInstructions] = useState([]);
-  const [goals, setGoals] = useState([]);
+  const [challenge, setChallenge] = useState(null);
 
   const db = firebase.firestore();
   const Auth = useContext(AuthContext);
   const { uid } = Auth.userInfo;
 
-  const getGoals = async() => {
+  const getCurrentChallenge = async() => {
     try {
-      const snapshot = await db.collection('users').doc(uid).collection('goals').get();      
-      setGoals(snapshot.docs.map(doc => {
-        const data = doc.data();
-        const id = doc.id;
-        return { id, data }
-      }));
+      const snapshot = await db.collection('users').doc(uid)
+      .collection('challenges').doc('currentChallenge').get();        
+      setChallenge(snapshot.data());
+      
+      if(snapshot.data()) {
+        return true
+      }
+      return false
     } catch (error) {
       return error
     }
   };
+  const startChallenge = async(data) => {  
+    try {
+      const checkChallenge = await getCurrentChallenge();
+      
+      // Change notification style
+      if(checkChallenge) {
+        console.log('you already have a challenge') 
+        return false;
+      }                
 
-  const addGoal = (data) => {  
-    db.collection('users').doc(uid).collection('goals').add(data)    
-    .then(() => {getGoals()})    
-    .catch(err => console.error(err.message));
-  };
-  
-  const removeGoal = (docId) => {    
-    db.collection('users').doc(uid).collection('goals').doc(docId).delete()
-    .then(() => {getGoals()})
-    .catch(err => console.log(err.message));
-    
-  };
+      const addNew = await db.collection('users').doc(uid).collection('challenges').doc('currentChallenge').set(data);            
+      getCurrentChallenge();  
+    }
+    catch(error) {
+      return error
+    }
+       
+  }
+  const pauseChallenge = (challengeId) => {
+  }
+  const finishChallenge = (challengeId) => {
+
+  }
+
 
   const getFullRecipeInfo = async (id) => {    
     try {
@@ -72,9 +86,9 @@ function DataProvider(props) {
   
   return (
     <DataContext.Provider value={{
-      fullRecipeInfo, suggested, fullRecipeInstructions, goals,
+      fullRecipeInfo, suggested, fullRecipeInstructions, challenge,
       getFullRecipeInfo, getSuggested, getFullRecipeInstructions,
-      getGoals, addGoal, removeGoal      
+      getCurrentChallenge, startChallenge  
     }} {...props} />
   )
 }

@@ -88,6 +88,15 @@ h3 {
 h4 {
 	font-size:1rem;
 }
+h5 {
+	letter-spacing: 1;
+	font-weight:600;
+	margin:0 0 1rem 0;
+	font-size:0.75rem;
+	color:rgba(0,0,0,0.5);
+	text-transform: uppercase;
+	line-height: 1;
+}
 p.body-lg {
 	font-size:1.125rem;
 }
@@ -102,9 +111,19 @@ small {
 }
 
 a {
-	text-decoration: none;
+	text-decoration: none;	
 }
-
+a.link {
+	color:rgba(0,0,0,0.7);	
+	text-decoration: underline;
+	text-decoration-style: dashed;
+	font-weight:600;
+}
+a.link:hover {
+	color:#2D864C;
+	cursor:pointer;
+}
+ 
 @media(min-width:56rem) {
 	h1 	{ font-size:3rem; }
 	h2 	{ font-size:2rem; }
