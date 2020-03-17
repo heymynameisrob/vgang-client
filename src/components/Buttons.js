@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import SVG from 'react-inlinesvg';
 import gIcon from './gicon.svg';
+import {Edit2} from 'react-feather';
 
 export const PrimaryButton = (props) => {
   const { size, label } = props;
@@ -30,6 +31,16 @@ export const GoogleButton = (props) => {
         <p>Sign-in with Google</p>
       </StyledGoogleButtonInner>
     </StyledGoogleButton>
+  )
+}
+
+export const ChallengeButton = (props) => {
+  const { title, ...rest} = props;
+  return(
+    <StyledChallengeTitle {...rest}>
+      <span>{title}</span>
+      <Edit2 color="rgba(255,255,255,0.5)" size={16} />
+    </StyledChallengeTitle>
   )
 }
 
@@ -121,6 +132,23 @@ const StyledGoogleButtonInner = styled.div`
   svg {
     padding-right:.5rem;
     max-width:2rem;
+  }
+`
+
+const StyledChallengeTitle = styled.div`
+  display:inline-block;
+  background-color:${props => props.base || props.theme.colors.grey};
+  padding:.5rem 1rem;
+  margin:1rem auto;  
+  color:${props => props.base ? '#fff' : props.theme.colors.textSecondary};
+  text-align:center;
+  border-radius:4rem;  
+  box-shadow:0 2px 4px rgba(0,0,0,0.08);
+  cursor:pointer;
+
+  span {
+    padding-right:.5rem;
+    line-height:1.25;
   }
 `
 

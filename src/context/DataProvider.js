@@ -10,7 +10,7 @@ function DataProvider(props) {
   const [suggested, setSuggested] = useState([]);
   const [fullRecipeInfo, setFullRecipeInfo] = useState([]);
   const [fullRecipeInstructions, setFullRecipeInstructions] = useState([]);
-  const [challenge, setChallenge] = useState(null);
+  const [challenge, setChallenge] = useState({});
 
   const db = firebase.firestore();
   const Auth = useContext(AuthContext);
@@ -19,27 +19,22 @@ function DataProvider(props) {
   const getCurrentChallenge = async() => {
     try {
       const snapshot = await db.collection('users').doc(uid)
-      .collection('challenges').doc('currentChallenge').get();        
-      setChallenge(snapshot.data());
-      
+      .collection('challenges').doc('currentChallenge').get();              
+    
+      // Check if data exists and set state accordingly
       if(snapshot.data()) {
-        return true
-      }
+        setChallenge(snapshot.data()); 
+        return true       
+      } 
+      setChallenge({id:'blank'});  
       return false
+      
     } catch (error) {
       return error
     }
   };
   const startChallenge = async(data) => {  
     try {
-      const checkChallenge = await getCurrentChallenge();
-      
-      // Change notification style
-      if(checkChallenge) {
-        console.log('you already have a challenge') 
-        return false;
-      }                
-
       const addNew = await db.collection('users').doc(uid).collection('challenges').doc('currentChallenge').set(data);            
       getCurrentChallenge();  
     }

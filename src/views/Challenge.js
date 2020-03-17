@@ -1,24 +1,22 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Link, useParams, Redirect} from 'react-router-dom';
-import styled, { ThemeContext } from 'styled-components';
-import {getDaysLeftPc} from '../components/Helpers';
+import React, {useEffect, useState} from 'react';
+import {Link, useParams, useHistory} from 'react-router-dom';
+import styled from 'styled-components';
+import {getDaysLeftPc, objExists} from '../components/Helpers'; 
 import {ProgressCircle} from '../components/Progress';
-import {PrimaryButton, SecondaryButton} from '../components/Buttons';
+import {PrimaryButton, SecondaryButton, ChallengeButton} from '../components/Buttons';
 import {ViewContainer, ViewLayout, ViewLayoutCenter} from './index.js';
-import {DataContext, useData, DataProvider} from '../context/DataProvider';
+import {useData} from '../context/DataProvider';
 import { LoadingListSkeleton, LoadingSpinner } from '../components/Helpers.js';
 import { ChallengeCard } from '../components/Cards';
 import {ChallengeData} from '../data/ChallengeData';
 
-const Modal = React.lazy(
-  () => import('../components/Overlays').then(module => ({ default: module.Modal }))
-)
+const Modal = React.lazy(() => import('../components/Overlays').then(module => ({ default: module.Modal })));
+const dayjs = require('dayjs');
 
-const dayjs = require('dayjs')
-
+// Challenge List
 const ChallengeList = (props) => {
   return(
-    <ViewLayout>
+    <ViewLayout {...props}>
       {ChallengeData.map(c => {
           const {id, timeFrameDays, ...rest} = c;
           return(
@@ -33,19 +31,25 @@ const ChallengeList = (props) => {
 
 export const ChallengeDetail = (props) => {
   let { id } = useParams();  
-  const {startChallenge} = useData();
+  const {startChallenge, getCurrentChallenge} = useData();
+  const history = useHistory();
   const getData = ChallengeData.filter(obj => obj.id === id);
-  const [modalOpen, setModalOpen] = useState(false);  
+  const [confModalOpen, setConfModalOpen] = useState(false);  
+  const [alertModalOpen, setAlertModalOpen] = useState(false);  
   const [challengeData, setChallengeData] = useState(getData[0]);
-  const {title, desc, tips, timeFrameDays, baseColor} = challengeData
 
+  // Post challenge data with start/end times to DB
   useEffect(() => {
     setChallengeData({
       ...challengeData,
-      stateDate:dayjs().toString(),
+      startDate:dayjs().toString(),
       endDate:dayjs().add(timeFrameDays, 'day').toString()
-    })
-  }, [])
+    });
+
+  }, []);
+
+
+  const {title, desc, tips, timeFrameDays, baseColor} = challengeData
 
   return(    
     <ViewContainer title={title} childView={true} baseColor={baseColor}>
@@ -63,15 +67,33 @@ export const ChallengeDetail = (props) => {
             {tips.map(tip => {return( <li key={tip}>{tip}</li>)})}
           </ul>
          </StyledChallengeTips>
-        <PrimaryButton label="Start fast" size="large" onClick={() => {startChallenge(challengeData); setModalOpen(true)}}/>
+        <PrimaryButton label="Start challenge" size="large" 
+        onClick={() => {
+          getCurrentChallenge().then(dataExists => {            
+            if(dataExists) {
+              setAlertModalOpen(true);            
+              return
+            }
+            startChallenge(challengeData);
+            setConfModalOpen(true);            
+           }); 
+        }} />
       </ViewLayout>
       <React.Suspense fallback={<LoadingSpinner fixed={true}/>}>
-        <Modal isOpen={modalOpen}>
+        <Modal isOpen={confModalOpen} onCloseRequest={() => setConfModalOpen(false)}>
           <StyledModalInner>
             <img src="https://placehold.it/200x200" />
             <h3>Congratulations</h3>
             <p>You have started the challenge {title}. Good luck!</p>
             <Link to="/challenge" className="link">Thanks!</Link>
+          </StyledModalInner>
+        </Modal>
+        <Modal isOpen={alertModalOpen} onCloseRequest={() => setAlertModalOpen(false)}>
+          <StyledModalInner>            
+            <h3>You already have a current challenge</h3>
+            <p>If you start a new challenge, you will lose all your progress on your current one.</p>
+            <SecondaryButton onClick={() => {startChallenge(challengeData); setAlertModalOpen(false); history.push('/challenge')}} label="Start new challenge" size="large"/>
+            <a onClick={() => {setAlertModalOpen(false)}} className="link">Dismiss!</a>
           </StyledModalInner>
         </Modal>
       </React.Suspense>
@@ -80,48 +102,58 @@ export const ChallengeDetail = (props) => {
 }
 
 export const ChallengeCurrent = ({data}) => {
-  const {tips, endDate, startDate, emoji, title, baseColor, timeFrameDays} = data;
-  
+  const [modalOpen, setModalOpen] = useState(false);
+  const {tips, endDate, startDate, emoji, title, baseColor, timeFrameDays} = data;  
+
   return (
     <ViewLayout>
       <StyledChallengeCurrentDetail>
         <h2>You're doing great</h2>
-        <p>{tips[0]}</p>
-        <StyledChallengeTitle base={baseColor}>
-          {emoji} {title}
-        </StyledChallengeTitle>
+        <p>{tips[Math.round(Math.random()*(tips.length-1))]}</p>
+        <ChallengeButton title={`${emoji} ${title}`} base={baseColor} onClick={() => setModalOpen(true)}/>
         <ProgressCircle pc={getDaysLeftPc(startDate, endDate)} color={baseColor} size="large">
-          <h2>{dayjs(endDate).diff(startDate, 'd')}</h2>
-          <small>days left</small>        
-          <p>{Math.round(getDaysLeftPc(startDate, endDate))}% completed</p>    
+          <h1>{dayjs(endDate).diff(startDate, 'd')} days</h1>
+          <small>remaining</small>        
+          <p className="completed">{Math.round(getDaysLeftPc(startDate, endDate))}% completed</p>    
         </ProgressCircle>
       </StyledChallengeCurrentDetail>
+      <StyledLinkWrap>
+        <a href="#" className="link">Pause challenge</a>
+      </StyledLinkWrap>
+      <React.Suspense fallback={<LoadingSpinner fixed={true}/>}>
+        <Modal isOpen={modalOpen} onCloseRequest={() => setModalOpen(false)}>
+          <h3>Choose a new challenge</h3>
+          <ChallengeList style={{padding:'2rem 1.5rem'}}/>
+          <StyledLinkWrap>
+            <a onClick={() => setModalOpen(false)} className="link">Close</a>          
+          </StyledLinkWrap>
+        </Modal>
+      </React.Suspense>
     </ViewLayout>
   )
 }
 
 const Challenge = () => {
   const {challenge, getCurrentChallenge} = useData();  
-   const [isChallengeCurrent, setIsChallengeCurrent] = useState();
 
+  // Get latest challenge data
   useEffect(() => {
-    getCurrentChallenge().then(res => {
-      setIsChallengeCurrent(res);
-    })
-  }, []);  
+    getCurrentChallenge();
+  }, []);    
 
-  if(!challenge) {
+  // Check if data is valid
+  if(!objExists(challenge)) {
     return <LoadingListSkeleton />
   }
 
   return (
     <ViewContainer title={'Challenges'}>
-      {isChallengeCurrent ? <ChallengeCurrent data={challenge} /> : <ChallengeList />}
+      <React.Suspense fallback={<LoadingListSkeleton />}>
+        {challenge ? <ChallengeCurrent data={challenge} /> : <ChallengeList />}
+      </React.Suspense>
     </ViewContainer>
   );
 }
-
-export default Challenge;
 
 const StyledChallengeDetails = styled.div`
   display:block;
@@ -168,19 +200,13 @@ const StyledModalInner = styled.div`
     margin-bottom:1.5rem;
   }
 `;
-
 const StyledChallengeCurrentDetail = styled.div`
   display:block;
   text-align:center;
 `
-
-const StyledChallengeTitle = styled.div`
+const StyledLinkWrap = styled.div`
   display:inline-block;
-  background-color:${props => props.theme.colors.grey};
-  padding:.5rem 1rem;
-  margin:1rem auto 3rem auto;  
-  color:${props => props.theme.colors.textSecondary};
-  text-align:center;
-  border-radius:4rem;  
+  margin:1rem auto;
 `
 
+export default Challenge;

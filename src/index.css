@@ -1,3 +1,21 @@
+:root {
+	--text-primary:rgba(0,0,0,0.9);
+	--text-secondary: rgba(0,0,0,0.7);
+	--text-tertiary:rgba(0,0,0,0.5);
+	--color-pear:#2D864C;
+	--color-pear-light:#92DBAC;
+	--color-peach:#E3705A;
+	--color-peach-light:#EFAEA0;
+	--grey-dark:#999999;
+	--grey:#D6D5D4;
+	--grey-light:#fbf7f0;
+	--base:var(--grey-light);
+
+	--font-stack:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+	'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+	sans-serif;
+}
+
 *,
 *::after,
 *::before {
@@ -38,12 +56,10 @@ footer, header, hgroup, menu, nav, section {
 body {
   margin: 0;
   line-height:1.25;
-	color:rgba(0,0,0,0.9);
+	color:var(--text-primary);
 	font-weight:400;
-  background-color:#FAF9F7;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background-color:var(--base);
+  font-family: var(--font-stack);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -116,7 +132,7 @@ a {
 a.link {
 	color:rgba(0,0,0,0.7);	
 	text-decoration: underline;
-	text-decoration-style: dashed;
+	text-decoration-style: dotted;
 	font-weight:600;
 }
 a.link:hover {
@@ -127,8 +143,8 @@ a.link:hover {
 @media(min-width:56rem) {
 	h1 	{ font-size:3rem; }
 	h2 	{ font-size:2rem; }
-	h3	{ font-size:1.75rem; }
-	h4 	{ font-size:1.5rem; }
+	h3	{ font-size:1.5rem; }
+	h4 	{ font-size:1.25rem; }
 	p.body-lg { font-size:1.25rem; }
 	p 	{ font-size:1rem;}
 }

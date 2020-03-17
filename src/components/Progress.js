@@ -8,7 +8,7 @@ export const ProgressCircle = (props) => {
   return(
     <StyledProgressWrapper size={size} color={color}>
       <CircularProgressbar value={pc} text={label} />
-      <StyledProgressDetail>
+      <StyledProgressDetail color={color}>
         {children}
       </StyledProgressDetail>
     </StyledProgressWrapper>
@@ -18,7 +18,11 @@ export const ProgressCircle = (props) => {
 const StyledProgressWrapper = styled.div`
   position:relative;
   margin:1.5rem auto;
-  max-width:${props => props.size == 'large' ? '20rem' : '6rem'};
+  max-width:${props => props.size == 'large' ? '16rem' : '4rem'};
+
+  @media(min-width:56rem) {
+    max-width:${props => props.size == 'large' ? '24rem' : '8rem'};
+  }
   
   .CircularProgressbar .CircularProgressbar-path {
     stroke:${props => props.color || props.theme.colors.pear};
@@ -46,8 +50,13 @@ const StyledProgressDetail = styled.div`
   flex-flow:column nowrap;
   text-align:center;
 
-  h2, h3, h4 {
-    margin:0;
+  h1, h2, h3, h4 {
+    margin:0.25em 0;
+  }
+  p.completed {
+    color:${props => props.color || props.theme.colors.pear};
+    font-weight:600;
+    margin-top:.5rem;
   }
   p, small {
     color:${props => props.theme.colors.textSecondary};

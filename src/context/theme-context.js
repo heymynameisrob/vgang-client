@@ -8,7 +8,7 @@ const theme = {
     textSecondary: 'rgba(0,0,0,0.7)',
     greyDark: '#999999',
     grey: '#D6D5D4',
-    greyLight: '#FAF9F7'
+    greyLight: '#fbf7f0'
   }
 }
 

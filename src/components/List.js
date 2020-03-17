@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import {darken} from 'polished';
 
 export const ListItemInner = (props) => {
-  const { image, title, subtitle } = props;
+  const { image, title, subtitle, ...rest } = props;
   return (
-    <StyledListItem>
+    <StyledListItem {...rest}>
       {image && <StyledListImage><img src={image} alt={title} loading="lazy" /></StyledListImage>}
       <StyledListItemCopy>
         <h4>{title}</h4>
@@ -25,10 +26,14 @@ const StyledListItem = styled.div`
   justify-content:flex-start;
   align-items:center;
   flex-flow:row nowrap;
-  padding:1rem 0;
+  padding:1rem 1.5rem;
+
+  @media(min-width:56rem) {
+    border-radius:0.25rem;
+  }
 
   &:hover {
-    background-color:#F2F1EF;
+    background-color:${darken(0.03, '#fbf7f0')}
   }
 `;
 const StyledListImage = styled.div`

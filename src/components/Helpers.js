@@ -16,9 +16,17 @@ export const LoadingSpinner = ({ fixed }) => {
   );
 };
 
+export const isObject = (value) => {
+  return value && typeof value === 'object' && value.constructor === Object;
+}
+
+export const objExists = (obj) => {
+  return Object.keys(obj).includes("id");
+}
+
 export const getDaysLeftPc = (start, end) => {
-  const startDate = dayjs(start);
-  const endDate = dayjs(end);  
+  const startDate = dayjs(start, 'D');
+  const endDate = dayjs(end, 'D');  
   return 100 - (endDate.diff(dayjs(), 'h') / endDate.diff(startDate, 'h') * 100);
 }
 

@@ -20,7 +20,7 @@ const SuggestionList = ({ data }) => {
   return data.map(item => {
     const { title, readyInMinutes, servings, id, image } = item;
     return (
-      <ListItem key={id} image={`https://spoonacular.com/recipeImages/${image}`} title={title} subtitle={`${readyInMinutes} mins • ${servings} people`} path={`/meal/${id}`} />
+      <ListItem style={{marginLeft: '-1.5rem', marginRight: '-1.5rem'}} key={id} image={`https://spoonacular.com/recipeImages/${image}`} title={title} subtitle={`${readyInMinutes} mins • ${servings} people`} path={`/meal/${id}`} />
     )
   })
 }
