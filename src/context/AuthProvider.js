@@ -30,7 +30,7 @@ function AuthProvider(props) {
   }, []);
 
   if (fetchingUserData) {
-    return <LoadingSpinner fixed={'fixed'} />
+    return <LoadingSpinner fixed={'fixed'} size={'large'} />
   }
 
 

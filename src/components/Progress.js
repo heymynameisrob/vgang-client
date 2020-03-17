@@ -55,7 +55,7 @@ const StyledProgressDetail = styled.div`
   }
   p.completed {
     color:${props => props.color || props.theme.colors.pear};
-    font-weight:600;
+    font-weight:500;
     margin-top:.5rem;
   }
   p, small {

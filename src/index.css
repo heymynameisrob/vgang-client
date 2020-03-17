@@ -23,9 +23,13 @@
 }
 
 html,
-body,
-#root {
+body {
 	height:100%;
+}
+
+#root {
+	height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 html, body, div, span, applet, object, iframe,
@@ -106,7 +110,7 @@ h4 {
 }
 h5 {
 	letter-spacing: 1;
-	font-weight:600;
+	font-weight:500;
 	margin:0 0 1rem 0;
 	font-size:0.75rem;
 	color:rgba(0,0,0,0.5);
@@ -120,6 +124,7 @@ p {
 	font-size:1rem;
 	color:rgba(0,0,0,0.7);
 	line-height: 1.6;
+	font-weight:400;
 	margin:0;
 }
 small {
@@ -133,7 +138,7 @@ a.link {
 	color:rgba(0,0,0,0.7);	
 	text-decoration: underline;
 	text-decoration-style: dotted;
-	font-weight:600;
+	font-weight:500;
 }
 a.link:hover {
 	color:#2D864C;

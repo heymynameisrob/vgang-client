@@ -6,12 +6,11 @@ const dayjs = require('dayjs');
 export const LoadingListSkeleton = () => {
   return <Skeleton count={5} />
 }
-export const LoadingSpinner = ({ fixed }) => {
+export const LoadingSpinner = (props) => {
+  const {fixed, size, color} = props;
   return (
     <StyledLoadingSpinnerWrap fixed={fixed}>
-      <div>
-        <StyledLoadingSpinner />
-      </div>
+      <StyledLoadingSpinner size={size} color={color}/>          
     </StyledLoadingSpinnerWrap>
   );
 };
@@ -70,26 +69,28 @@ const StyledLoadingSpinnerWrap = styled.div`
   top:0;
   left:0;
   width:${props => props.fixed ? '100%' : 'auto'};;
-  height:${props => props.fixed ? '100%' : 'auto'};;
+  height:${props => props.fixed ? '100%' : 'auto'};
   z-index:998;
-  background-color:rgba(255,255,255,0.64);
+  background-color:${props => props.fixed ? 'rgba(255,255,255,0.2)' : 'transparent'};
   display:flex;
   justify-content:center;
   align-items:center;  
 
 `;
 const StyledLoadingSpinner = styled.div`
+  --faded-color:rgba(45, 134, 76, 0.2);
+  --color:rgba(45, 134, 76, 1);  
   border-radius: 50%;
-  width: 10em;
-  height: 10em;
+  width: ${props => props.size === 'large' ? '10rem' : '3rem'};
+  height: ${props => props.size === 'large' ? '10rem' : '3rem'};
   margin: 60px auto;
   font-size: 10px;
   position: relative;
   text-indent: -9999em;
-  border-top: 1.1em solid rgba(45, 134, 76, 0.2);
-  border-right: 1.1em solid rgba(45, 134, 76, 0.2);
-  border-bottom: 1.1em solid rgba(45, 134, 76, 0.2);
-  border-left: 1.1em solid rgba(45, 134, 76, 1);
+  border-top: ${props => props.size === 'large' ? '1.1rem' : '0.25rem'} solid var(--faded-color);
+  border-right: ${props => props.size === 'large' ? '1.1rem' : '0.25rem'} solid var(--faded-color);
+  border-bottom: ${props => props.size === 'large' ? '1.1rem' : '0.25rem'} solid var(--faded-color);
+  border-left: ${props => props.size === 'large' ? '1.1rem' : '0.25rem'} solid var(--color);
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);

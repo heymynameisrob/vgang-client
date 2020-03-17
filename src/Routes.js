@@ -22,7 +22,7 @@ const createRoutes = (props) => {
   return (    
     <Router>
       <RouterNav />
-      <React.Suspense fallback={<LoadingSpinner />}>
+      <React.Suspense fallback={<LoadingSpinner fixed={true} size={'large'}/>}>
         <Route exact path="/" component={Discover} />      
         <Route exact path="/learn" component={Learn} />
         <Route exact path="/login" component={LogIn} />

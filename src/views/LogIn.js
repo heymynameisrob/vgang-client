@@ -35,7 +35,7 @@ const StyledViewContainer = styled.div`
   padding:2rem 1.5rem 2rem;
   max-width:56rem;
   margin:0 auto;
-  min-height:100vh;
+  height:100%;  
   
   button {
     margin-top:auto;
