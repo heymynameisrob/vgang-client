@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams, useHistory} from 'react-router-dom';
 import styled from 'styled-components';
-import {getDaysLeftPc, objExists} from '../components/Helpers'; 
+import {getDaysLeftPc, objExists, getOverallChallengeTime} from '../components/Helpers'; 
 import {ProgressCircle} from '../components/Progress';
 import {PrimaryButton, SecondaryButton, ChallengeButton} from '../components/Buttons';
 import {ViewContainer, ViewLayout, ViewLayoutCenter} from './index.js';
@@ -20,7 +20,7 @@ const ChallengeList = (props) => {
       {ChallengeData.map(c => {
           const {id, timeFrameDays, ...rest} = c;
           return(
-            <Link to={`/challenge/${id}`} key={id}>
+            <Link to={`/challenge/details/${id}`} key={id}>
               <ChallengeCard time={timeFrameDays} {...rest} />
             </Link>
           )
@@ -45,7 +45,6 @@ export const ChallengeDetail = (props) => {
       startDate:dayjs().toString(),
       endDate:dayjs().add(timeFrameDays, 'day').toString()
     });
-
   }, []);
 
 
@@ -103,7 +102,13 @@ export const ChallengeDetail = (props) => {
 
 export const ChallengeCurrent = ({data}) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const {tips, endDate, startDate, emoji, title, baseColor, timeFrameDays} = data;  
+  const history = useHistory();
+  const {tips, endDate, startDate, emoji, title, baseColor, timeFrameDays} = data;   
+  const hasChallengeEnded = dayjs().isAfter('endDate');
+  
+  if(!hasChallengeEnded) {
+    history.push('/challenge/complete');
+  }
 
   return (
     <ViewLayout>
@@ -133,12 +138,47 @@ export const ChallengeCurrent = ({data}) => {
   )
 }
 
+export const ChallengeComplete = () => {
+  const {getCompletedChallenge, completeChallenge} = useData();
+  const [challenge, setChallenge] = useState();
+
+  useEffect(() => {
+    completeChallenge()
+    .then((id) =>{
+      return getCompletedChallenge(id)
+    })
+    .then(res => {
+      setChallenge(res)     
+    })
+  },[]);
+
+  if(!challenge) {
+    return <LoadingSpinner fixed={true} size="large" />
+  }  
+
+  const {title, emoji, baseColor, endDate, startDate, timeFrameDays} = challenge;
+
+  return(    
+    <ViewContainer title="Completed challenge" childView={true} baseColor={baseColor}>
+      <ViewLayout>
+        <small>Challenge time</small>
+        <h1>{timeFrameDays} days</h1>
+        <ChallengeButton title={`${emoji} ${title}`} base={baseColor} />
+        <h5>Started</h5>
+        <p>{dayjs(startDate).format('dddd DD MMMM')}</p>
+        <h5>Finished</h5>
+        <p>{dayjs(endDate).format('dddd DD MMMM')}</p>
+      </ViewLayout>
+    </ViewContainer>
+  )
+}
+
 const Challenge = () => {
   const {challenge, getCurrentChallenge} = useData();  
 
   // Get latest challenge data
   useEffect(() => {
-    getCurrentChallenge();
+    getCurrentChallenge();    
   }, []);    
 
   // Check if data is valid

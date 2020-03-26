@@ -24,7 +24,7 @@ function DataProvider(props) {
       // Check if data exists and set state accordingly
       if(snapshot.data()) {
         setChallenge(snapshot.data()); 
-        return true       
+        return snapshot.data();       
       } 
       setChallenge({id:'blank'});  
       return false
@@ -32,7 +32,8 @@ function DataProvider(props) {
     } catch (error) {
       return error
     }
-  };
+  }
+
   const startChallenge = async(data) => {  
     try {
       const addNew = await db.collection('users').doc(uid).collection('challenges').doc('currentChallenge').set(data);            
@@ -43,10 +44,38 @@ function DataProvider(props) {
     }
        
   }
-  const pauseChallenge = (challengeId) => {
-  }
-  const finishChallenge = (challengeId) => {
 
+  const pauseChallenge = (challengeId) => {}
+
+  const completeChallenge = async () => {
+    try {
+      const current = await getCurrentChallenge();
+      if(current) {
+        const {id, endDate} = current
+        let docNameDate = endDate.split(/\s+/).slice(1,3);
+        const addNew = await db.collection('users').doc(uid).collection('challenges').doc(`${id}-${docNameDate[1]}-${docNameDate[0]}`).set(current);            
+        // const removeCurrent = await db.collection('users').doc(uid).collection('challenges').doc('currentChallenge').delete();            
+
+        return `${id}-${docNameDate[1]}-${docNameDate[0]}`
+      }
+      return false
+    }
+    catch(error) {
+      return error
+    }
+  }
+  const getCompletedChallenge = async (id) => {
+    try {
+      const snapshot = await db.collection('users').doc(uid)
+      .collection('challenges').doc(id).get();              
+          
+      if(snapshot.data()) {
+        return snapshot.data()          
+      }       
+      return false      
+    } catch (error) {
+      return error
+    }
   }
 
 
@@ -83,7 +112,7 @@ function DataProvider(props) {
     <DataContext.Provider value={{
       fullRecipeInfo, suggested, fullRecipeInstructions, challenge,
       getFullRecipeInfo, getSuggested, getFullRecipeInstructions,
-      getCurrentChallenge, startChallenge  
+      getCurrentChallenge, startChallenge, completeChallenge, getCompletedChallenge 
     }} {...props} />
   )
 }

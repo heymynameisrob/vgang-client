@@ -29,6 +29,13 @@ export const getDaysLeftPc = (start, end) => {
   return 100 - (endDate.diff(dayjs(), 'h') / endDate.diff(startDate, 'h') * 100);
 }
 
+export const getOverallChallengeTime = (start, end) => {
+  const startDate = dayjs(start, 'h');
+  const endDate = dayjs(end, 'h');  
+  const total = endDate.diff(startDate, 'h');
+  return dayjs(total).format("d days, h hours")
+}
+
 export const convertToTitleCase = (string) => {
   var sentence = string.toLowerCase().split(" ");
   for(var i = 0; i< sentence.length; i++){
