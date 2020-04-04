@@ -10,7 +10,7 @@ function DataProvider(props) {
   const [suggested, setSuggested] = useState([]);
   const [fullRecipeInfo, setFullRecipeInfo] = useState([]);
   const [fullRecipeInstructions, setFullRecipeInstructions] = useState([]);
-  const [challenge, setChallenge] = useState({});
+  const [challenge, setChallenge] = useState(null);
 
   const db = firebase.firestore();
   const Auth = useContext(AuthContext);
@@ -23,10 +23,10 @@ function DataProvider(props) {
     
       // Check if data exists and set state accordingly
       if(snapshot.data()) {
-        setChallenge(snapshot.data()); 
+        setChallenge(snapshot.data());         
         return snapshot.data();       
       } 
-      setChallenge({id:'blank'});  
+      setChallenge({});  
       return false
       
     } catch (error) {
@@ -54,7 +54,7 @@ function DataProvider(props) {
         const {id, endDate} = current
         let docNameDate = endDate.split(/\s+/).slice(1,3);
         const addNew = await db.collection('users').doc(uid).collection('challenges').doc(`${id}-${docNameDate[1]}-${docNameDate[0]}`).set(current);            
-        // const removeCurrent = await db.collection('users').doc(uid).collection('challenges').doc('currentChallenge').delete();            
+        const removeCurrent = await db.collection('users').doc(uid).collection('challenges').doc('currentChallenge').delete();            
 
         return `${id}-${docNameDate[1]}-${docNameDate[0]}`
       }

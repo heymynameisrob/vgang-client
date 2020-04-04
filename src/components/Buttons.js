@@ -50,7 +50,8 @@ const StyledPrimaryButton = styled.button`
   padding: ${props => props.size === 'large' ? '1rem 2rem' : '0.75 1.5rem'};
   font-size: ${props => props.size === 'large' ? '1.125rem' : '1rem'};
   color:#fff;
-  font-weight:600;
+  font-family:var(--font-stack);
+  font-weight:500;
   border-radius:4rem;
   text-decoration:none;
   margin:1.5rem auto;
@@ -77,7 +78,8 @@ const StyledSecondaryButton = styled.button`
   padding: ${props => props.size === 'large' ? '1rem 2rem' : '0.75 1.5rem'};
   font-size: ${props => props.size === 'large' ? '1.125rem' : '1rem'};
   color:${props => props.theme.colors.pear};
-  font-weight:600;
+  font-family:var(--font-stack);
+  font-weight:500;
   border-radius:4rem;
   margin:1.5rem auto;
   text-align:center;
@@ -100,10 +102,7 @@ const StyledSecondaryButton = styled.button`
 const StyledGoogleButton = styled.button`
   display:block;
   width:100%;
-  padding:.75rem 1.25rem;
-  font-size: 1.125rem;
-  color:${props => props.theme.colors.textPrimary};
-  font-weight:600;
+  padding:.75rem 1.25rem;  
   border-radius:4rem;
   margin:1.5rem auto;
   text-align:center;
@@ -116,6 +115,13 @@ const StyledGoogleButton = styled.button`
   opacity:1;
   transform:translate3d(0,0,0);
   transition: all .25s ease;
+
+  p {
+    font-family:var(--font-stack);
+    font-weight:500;
+    font-size: 1.125rem;
+    color:${props => props.theme.colors.textPrimary};
+  }
 
   &:hover {    
     opacity:0.8;

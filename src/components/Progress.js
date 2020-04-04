@@ -18,7 +18,7 @@ export const ProgressCircle = (props) => {
 const StyledProgressWrapper = styled.div`
   position:relative;
   margin:1.5rem auto;
-  max-width:${props => props.size == 'large' ? '16rem' : '4rem'};
+  max-width:${props => props.size == 'large' ? '16rem' : '6rem'};
 
   @media(min-width:56rem) {
     max-width:${props => props.size == 'large' ? '24rem' : '8rem'};
@@ -51,7 +51,7 @@ const StyledProgressDetail = styled.div`
   text-align:center;
 
   h1, h2, h3, h4 {
-    margin:0.25em 0;
+    margin:0.25rem 0;
   }
   p.completed {
     color:${props => props.color || props.theme.colors.pear};

@@ -27,7 +27,7 @@ const StyledCardFrame = styled.div`
   display:block;
   padding:1rem;
   border-radius:.5rem;
-  box-shadow:0 2px 4px rgba(0,0,0,0.08);
+  box-shadow:0 0.25rem 1rem rgba(0,0,0,0.08);
   background-color:${props => props.base || props.theme.colors.pear};
   margin-bottom:1.5rem;
   text-align:left;

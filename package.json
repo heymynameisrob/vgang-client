@@ -12,6 +12,7 @@
     "dayjs": "^1.8.23",
     "firebase": "^7.10.0",
     "firebase-auth": "^0.1.2",
+    "lodash": "^4.17.15",
     "polished": "^3.4.4",
     "react": "^16.13.0",
     "react-circular-progressbar": "^2.0.3",

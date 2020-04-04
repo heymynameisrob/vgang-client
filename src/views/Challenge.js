@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams, useHistory} from 'react-router-dom';
 import styled from 'styled-components';
+import {isEmpty} from 'lodash';
+
 import {getDaysLeftPc, objExists, getOverallChallengeTime} from '../components/Helpers'; 
 import {ProgressCircle} from '../components/Progress';
 import {PrimaryButton, SecondaryButton, ChallengeButton} from '../components/Buttons';
@@ -160,14 +162,27 @@ export const ChallengeComplete = () => {
 
   return(    
     <ViewContainer title="Completed challenge" childView={true} baseColor={baseColor}>
-      <ViewLayout>
-        <small>Challenge time</small>
-        <h1>{timeFrameDays} days</h1>
-        <ChallengeButton title={`${emoji} ${title}`} base={baseColor} />
-        <h5>Started</h5>
-        <p>{dayjs(startDate).format('dddd DD MMMM')}</p>
-        <h5>Finished</h5>
-        <p>{dayjs(endDate).format('dddd DD MMMM')}</p>
+      <ViewLayout noPad="true">
+        <StyledChallengeOutcome>
+          <h5>Challenge time</h5>
+          <h1>{timeFrameDays} days</h1>
+          <ChallengeButton title={`${emoji} ${title}`} base={baseColor} />
+        </StyledChallengeOutcome>
+        <StyledChallengeDates>
+          <div>
+            <h5>Started</h5>
+            <p>{dayjs(startDate).format('dddd DD MMMM')}</p>
+          </div>
+          <div>
+            <h5>Finished</h5>
+            <p>{dayjs(endDate).format('dddd DD MMMM')}</p>
+          </div>   
+        </StyledChallengeDates>   
+        <div style={{padding: '1.5rem', marginTop: 'auto'}}>
+          <Link path="/challenges">
+            <SecondaryButton label="Back to challenges" size="large" />
+          </Link>
+        </div>
       </ViewLayout>
     </ViewContainer>
   )
@@ -178,19 +193,17 @@ const Challenge = () => {
 
   // Get latest challenge data
   useEffect(() => {
-    getCurrentChallenge();    
+    getCurrentChallenge();           
   }, []);    
 
-  // Check if data is valid
-  if(!objExists(challenge)) {
-    return <LoadingListSkeleton />
+  
+  if(challenge == null) {    
+    return <LoadingSpinner size="large" fixed="fixed" />
   }
 
   return (
-    <ViewContainer title={'Challenges'}>
-      <React.Suspense fallback={<LoadingListSkeleton />}>
-        {challenge ? <ChallengeCurrent data={challenge} /> : <ChallengeList />}
-      </React.Suspense>
+    <ViewContainer title={'Challenges'}>      
+      {!isEmpty(challenge) ? <ChallengeCurrent data={challenge} /> : <ChallengeList />}      
     </ViewContainer>
   );
 }
@@ -247,6 +260,25 @@ const StyledChallengeCurrentDetail = styled.div`
 const StyledLinkWrap = styled.div`
   display:inline-block;
   margin:1rem auto;
+`
+
+const StyledChallengeOutcome = styled.div`
+  display:block;
+  text-align:center;
+  padding:1.5rem;
+`
+const StyledChallengeDates = styled.div`
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  grid-grap:1.5rem;
+  text-align:center;
+  padding:1.5rem;
+  border-top:1px dashed ${props => props.theme.colors.grey};
+
+  p {
+    margin-top:0.5rem;
+    color:${props => props.theme.colors.textPrimary};
+  }
 `
 
 export default Challenge;
